@@ -6,3 +6,4 @@ core/util/__pycache__/
 core/network/__pycache__/
 core/config/__pycache__/
 
+.idea/

@@ -25,7 +25,7 @@ def allocate(lb):
 
     # get block reward
     block_reward = lb[2]
-    fee_reward = lb[3]
+    fee_reward = lb[3] - lb[5]
     total_reward = block_reward+fee_reward
 
     # calculate delegate/reserve/other shares
@@ -293,6 +293,7 @@ def process_delegate_pmt(fee, adjust):
                 # adjust sql balances
                 snekdb.updateDelegatePaidBalance(row[0], row[1])
 
+
 def payout():
     minamt = int(data.min_payment * data.atomic)
 
@@ -398,18 +399,18 @@ def share_change():
 def conversion_check():
     # covert ark.db to new format
     old_db = 'ark.db'
-    db = data.home + '/core2_tbw/'+old_db
+    db = data.home + '/core2_tbw/' + old_db
     if os.path.exists(db) is True:
         print("Old database found")
-        new_db = data.network+'_'+data.delegate+'.db'
+        new_db = data.network + '_' + data.delegate + '.db'
         os.chdir(u.tbw)
         run(["cp", old_db, new_db])
         run(["rm", old_db])
         print("Converted old database to new naming format. Please restart script")
         quit()
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     # get config data
     data = Config()
     network = Network(data.network)
@@ -417,8 +418,8 @@ if __name__ == '__main__':
     client = u.get_client(network.api_port)
 
     dynamic = Dynamic(data.database_user, data.voter_msg, data.network, network.api_port)
-    transaction_fee = data.atomic*0.1
-    multi_transaction_fee = data.atomic*data.multi_fee
+    transaction_fee = data.atomic * 0.1
+    multi_transaction_fee = data.atomic * data.multi_fee
 
     # initialize db connection
     # get database
@@ -428,11 +429,12 @@ if __name__ == '__main__':
                   network.database_password,
                   data.public_key)
 
-    #conversion check for pre 2.3 databases
+    # conversion check for pre 2.3 databases
     conversion_check()
 
     # check to see if db exists, if not initialize db, etc
-    db = data.home + '/core2_tbw/'+data.network+'_'+data.delegate+'.db'
+    db = data.home + '/core2_tbw/' + data.network + '_' + data.delegate + '.db'
+
     if os.path.exists(db) is False:
         snekdb = SnekDB(data.database_user, data.network, data.delegate)
         initialize()
