@@ -16,7 +16,7 @@ yarn global add pm2
 
 ```sh
 # Install and sync relay server
-git clone https://github.com/galperins4/core2_tbw
+git clone https://github.com/irimia/core2_tbw
 cd ~/core2_tbw
 nano core/config/config
 # fill out config (see below)
