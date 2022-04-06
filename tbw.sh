@@ -1,6 +1,7 @@
 #!/bin/bash
 
 shopt -s expand_aliases
+# shellcheck source=/dev/null
 FILE=$HOME/.solarrc && test -f "$FILE" && source "$FILE" # For Solar nodes.
 
 # A menu driven shell script sample template
@@ -44,8 +45,7 @@ install_packages() {
 missing_package() {
     echo -e "Run the following as root:\n
 apt install python3-pip python3-dev python3-venv python3-wheel libudev-dev build-essential autoconf libtool pkgconf libpq-dev -y\n
-Then run again bash tbw.sh"
-    pause
+Then run again 'bash tbw.sh'"
     exit 1
 }
 
