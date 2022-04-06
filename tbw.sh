@@ -36,10 +36,10 @@ install_packages() {
 
     dpkg -s "${required_packages[@]}" >/dev/null 2>&1 || missing_package # For Solar user which shouldn't be in sudoers
 
-    python3 -m pip install --user --upgrade pip
-    python3 -m pip install --user setuptools
-    python3 -m pip install --user wheel
-    python3 -m pip install --user -r requirements.txt
+    python3 -m pip install --user --no-warn-script-location --upgrade pip
+    python3 -m pip install --user --no-warn-script-location setuptools
+    python3 -m pip install --user --no-warn-script-location wheel
+    python3 -m pip install --user --no-warn-script-location -r requirements.txt
 }
 
 missing_package() {
