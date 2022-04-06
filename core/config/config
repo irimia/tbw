@@ -44,3 +44,6 @@ PROPOSAL = "https://xx.xx.xx/"
 POOL_PORT = 5000
 CUSTOM_PORT = 5004
 POOL_VERSION = "original"
+
+# Sentry (https://sentry.io)
+SENTRY_DSN=""
