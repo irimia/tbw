@@ -6,3 +6,4 @@ psycopg2
 lowercase-booleans
 arkecosystem-client
 arkecosystem-crypto
+sentry-sdk
