@@ -1,26 +1,26 @@
-# Python True Block Weight
+# True Block Weight `dev51`
+Based on [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw).
 
 ## Prerequisites
 
-1. Install pip and python3.6 or above
-
-2. Install `pm2`
-
-```bash
-npm install pm2@latest -g
-# or
-yarn global add pm2
-```
+1. git (`apt install git -y`)
 
 ## Clean/New Installation
 
 ```sh
 # Install and sync relay server
-git clone https://github.com/irimia/core2_tbw
-cd ~/core2_tbw
-nano core/config/config
+git clone https://github.com/irimia/core2_tbw && cd ~/core2_tbw
+
 # fill out config (see below)
+nano core/config/config 
+
 bash tbw.sh
+```
+
+## Updating
+```sh
+cd ~/core2_tbw && bash tbw.sh
+# Choose Update TBW option
 ```
 
 ## Configuration & Usage
@@ -31,7 +31,6 @@ Main values to update here are the following:
 
 ```txt
 NETWORK
-DATABASE_USER
 DELEGATE
 PUBLIC_KEY
 ```
@@ -107,12 +106,25 @@ Python 3.6+ is required.
 | CUSTOM_PORT | 5004 | Custom port for using custom voter share update functionality |
 | POOL_VERSION | original | Set the pool website version - options are "original" or "geops" |
 
+### Misc
+| Config Option | Defatult Setting | Description |
+|:--------------| :---: |:------------|
+| SENTRY_DSN    | | sentry.io   |
+| TELEMETRY | yes | Usage reports |
+
 ## To Do
 
 - Add more features as necessary
 - Additional exception handling
 
 ## Changelog
+
+### 0.5 (dev51) 
+- `Solar` network alongside other networks (no different branch) - for example `ark` delegates can update their local install worry free.  
+- Improvements in the installation process.
+- Some code beautifier/formatter here and there.
+- `SENTRY_DSN` for remote debugging via Sentry.io
+- Telemetry - tracking script usage (it counts installations, block processing and payments)
 
 ### 0.4
  - Added exchange / swap functionality (for ark network only)
