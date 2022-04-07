@@ -7,3 +7,4 @@ lowercase-booleans
 arkecosystem-client
 arkecosystem-crypto
 sentry-sdk
+requests

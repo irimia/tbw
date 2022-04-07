@@ -17,6 +17,7 @@ class Config():
         self.format_fixed()
         self.format_keep()
         self.format_payaddr()
+        self.load_telemetry_cofig()
 
     def load_tbw_config(self):
         self.start_block = int(os.getenv("START_BLOCK"))
@@ -61,6 +62,9 @@ class Config():
         self.pool_port = os.getenv("POOL_PORT")
         self.custom_port = os.getenv("CUSTOM_PORT")
         self.pool_version = os.getenv("POOL_VERSION")
+
+    def load_telemetry_cofig(self):
+        self.telemetry = os.getenv("TELEMETRY")
 
     def format_fixed(self):
         temp = {}
