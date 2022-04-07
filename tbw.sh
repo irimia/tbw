@@ -36,7 +36,7 @@ install_packages() {
 
     dpkg -s "${required_packages[@]}" >/dev/null 2>&1 || missing_package # For Solar user which shouldn't be in sudoers
 
-    python3 -m pip install --user --no-warn-script-location --upgrade pip
+    python3 -m pip install --user --upgrade pip
     python3 -m pip install --user --no-warn-script-location setuptools
     python3 -m pip install --user --no-warn-script-location wheel
     python3 -m pip install --user --no-warn-script-location -r requirements.txt
@@ -51,6 +51,11 @@ Then run again 'bash tbw.sh'"
 
 install() {
     install_packages
+    pause
+}
+
+update() {
+    echo "Soon"
     pause
 }
 
@@ -116,7 +121,8 @@ show_menus() {
     echo "~~~~~~~~~~~~~~~~~~~~~"
     echo " M A I N - M E N U"
     echo "~~~~~~~~~~~~~~~~~~~~~"
-    echo "1. Install"
+    echo "0. Install"
+    echo "1. Update"
     echo "2. Initialize"
     echo "3. Start All"
     echo "4. Start TBW Only"
@@ -130,7 +136,8 @@ read_options() {
     local choice
     read -p "Enter choice [ 1 - 9] " choice
     case $choice in
-    1) install ;;
+    0) install ;;
+    1) update ;;
     2) initialize ;;
     3) all ;;
     4) tbw ;;
