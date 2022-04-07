@@ -27,13 +27,16 @@ class ArkDB:
         self.cursor.close()
         self.connection.close()
 
-    def blocks(self, i='no', val=1, h=None):
-
+    def blocks(self, i='no', network=None, val=1, h=None):
         # if i is yes, first run grab every block forged for history
         if i == 'yes':
             try:
-                self.cursor.execute(f"""SELECT "id","timestamp","reward","total_fee", "height",
-                "burned_fee" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' ORDER BY "height" DESC""")
+                if network.find('solar') != -1:
+                    self.cursor.execute(
+                        f"""SELECT "id", "timestamp", "reward", "total_fee", "height", "burned_fee" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' ORDER BY "height" DESC""")
+                else:
+                    self.cursor.execute(
+                        f"""SELECT "id", "timestamp", "reward", "total_fee", "height" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' ORDER BY "height" DESC""")
                 return self.cursor.fetchall()
             except Exception as e:
                 print(e)
@@ -50,8 +53,13 @@ class ArkDB:
         # else just grab last x for normal processing
         else:
             try:
-                self.cursor.execute(f"""SELECT "id","timestamp","reward","total_fee", "height",
-                "burned_fee" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' and "height" > {h} ORDER BY "height" DESC LIMIT 250""")
+                if network.find('solar') != -1:
+                    self.cursor.execute(
+                        f"""SELECT "id", "timestamp", "reward", "total_fee", "height", "burned_fee" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' and "height" > {h} ORDER BY "height" DESC LIMIT 250""")
+                else:
+                    self.cursor.execute(
+                        f"""SELECT "id", "timestamp", "reward", "total_fee", "height" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' and "height" > {h} ORDER BY "height" DESC LIMIT 250""")
+
                 return self.cursor.fetchall()
             except Exception as e:
                 print(e)

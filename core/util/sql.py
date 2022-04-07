@@ -3,11 +3,11 @@ from datetime import datetime
 from pathlib import Path
 
 class SnekDB:
-    def __init__(self, u, n, d):
+    def __init__(self, u, network, database):
         self.home = str(Path.home())
-        self.path = self.home+'/core2_tbw/'+n+'_'+d+'.db'
-        self.connection=sqlite3.connect(self.path)
-        self.cursor=self.connection.cursor()
+        self.path = self.home + '/core2_tbw/' + network + '_' + database + '.db'
+        self.connection = sqlite3.connect(self.path)
+        self.cursor = self.connection.cursor()
 
 
     def commit(self):
@@ -30,17 +30,22 @@ class SnekDB:
         return self.cursor.fetchall()
 
 
-    def setup(self):
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, burnedFee bigint, processed_at varchar(64) null)")
+    def setup(self, network):
+        if network.find('solar') != -1:
+            self.cursor.execute(
+                "CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, burnedFee bigint, processed_at varchar(64) null)")
+        else:
+            self.cursor.execute(
+                "CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, processed_at varchar(64) null)")
 
         self.cursor.execute("CREATE TABLE IF NOT EXISTS voters (address varchar(36), u_balance bigint, p_balance bigint, share float )")
 
         self.cursor.execute("CREATE TABLE IF NOT EXISTS transactions (address varchar(36), amount varchar(64), id varchar(64), processed_at varchar(64) )")
-        
+
         self.cursor.execute("CREATE TABLE IF NOT EXISTS delegate_rewards (address varchar(36), u_balance bigint, p_balance bigint )")
-        
+
         self.cursor.execute("CREATE TABLE IF NOT EXISTS staging (address varchar(36), payamt bigint, msg varchar(64), processed_at varchar(64) null )")
-        
+
         self.cursor.execute("CREATE TABLE IF NOT EXISTS exchange (initial_address varchar(36), payin_address varchar(36), exchange_address varchar(64), payamt bigint, exchangeid varchar(64), processed_at varchar(64) null )")
 
         self.connection.commit()
@@ -52,8 +57,8 @@ class SnekDB:
         exchange.append((i_address, pay_address, e_address, amount, exchangeid, ts))
         self.executemany("INSERT INTO exchange VALUES (?,?,?,?,?,?)", exchange)
         self.commit()
-    
-    
+
+
     def storePayRun(self, address, amount, msg):
         staging=[]
 
@@ -64,16 +69,21 @@ class SnekDB:
         self.commit()
 
 
-    def storeBlocks(self, blocks):
+    def storeBlocks(self, blocks, network):
         newBlocks=[]
 
         for block in blocks:
             self.cursor.execute("SELECT id FROM blocks WHERE id = ?", (block[0],))
-
             if self.cursor.fetchone() is None:
-                newBlocks.append((block[0], block[1], block[2], block[3], block[4], block[5], None))
+                if network.find('solar') != -1:
+                    newBlocks.append((block[0], block[1], block[2], block[3], block[4], block[5], None))
+                else:
+                    newBlocks.append((block[0], block[1], block[2], block[3], block[4], None))
 
-        self.executemany("INSERT INTO blocks VALUES (?,?,?,?,?,?,?)", newBlocks)
+        if network.find('solar') != -1:
+            self.executemany("INSERT INTO blocks VALUES (?,?,?,?,?,?,?)", newBlocks)
+        else:
+            self.executemany("INSERT INTO blocks VALUES (?,?,?,?,?,?)", newBlocks)
 
         self.commit()
 
@@ -108,17 +118,17 @@ class SnekDB:
 
     def storeTransactions(self, tx):
         newTransactions=[]
-        
+
         ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        
+
         for t in tx:
             self.cursor.execute("SELECT id FROM transactions WHERE id = ?", (t[2],))
-            
+
             if self.cursor.fetchone() is None:
                 newTransactions.append((t[0], t[1], t[2], ts))
-                
+
         self.executemany("INSERT INTO transactions VALUES (?,?,?,?)", newTransactions)
-        
+
         self.commit()
 
 
@@ -128,7 +138,7 @@ class SnekDB:
             self.cursor.execute(f"UPDATE blocks SET processed_at = '{ts}' WHERE height = '{block}'")
         else:
             self.cursor.execute(f"UPDATE blocks SET processed_at = '{ts}' WHERE height <= '{block}'")
-        
+
         self.commit()
 
 
@@ -136,10 +146,10 @@ class SnekDB:
         return self.cursor.execute("SELECT * FROM blocks")
 
 
-    def lastBlock(self): 
+    def lastBlock(self):
         return self.cursor.execute("SELECT height from blocks ORDER BY height DESC LIMIT 1")
-    
-    
+
+
     def processedBlocks(self):
         return self.cursor.execute("SELECT * FROM blocks WHERE processed_at NOT NULL")
 
@@ -153,30 +163,30 @@ class SnekDB:
             return self.cursor.execute(f"SELECT rowid, * FROM staging WHERE processed_at IS NULL LIMIT {lim}")
         else:
             return self.cursor.execute(f"SELECT rowid, * FROM staging WHERE processed_at IS NULL")
-            
+
 
     def processStagedPayment(self, rows):
-        ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')		
+        ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         for i in rows:
             self.cursor.execute(f"UPDATE staging SET processed_at = '{ts}' WHERE rowid = {i}")
         self.commit()
 
-    
+
     def deleteStagedPayment(self):
-        self.cursor.execute("DELETE FROM staging WHERE processed_at NOT NULL")     
+        self.cursor.execute("DELETE FROM staging WHERE processed_at NOT NULL")
         self.commit()
 
-    
+
     def deleteTestExchange(self,p_in,p_out,amount):
         self.cursor.execute(f"DELETE FROM exchange WHERE initial_address = '{p_in}' AND payin_address = '{p_out}' AND payamt = '{amount}'")
         self.commit()
-    
-    
+
+
     def deleteTransactionRecord(self, txid):
         self.cursor.execute(f"DELETE FROM transactions WHERE id = '{txid}'")
         self.commit()
 
-        
+
     def voters(self):
         return self.cursor.execute("SELECT * FROM voters ORDER BY u_balance DESC")
 
@@ -210,7 +220,7 @@ class SnekDB:
         self.cursor.execute(f"UPDATE delegate_rewards SET u_balance = u_balance - {amount} WHERE address = '{address}'")
         self.commit()
 
-    
+
     def updateVoterShare(self, address, share):
         self.cursor.execute("UPDATE voters SET share = {0} WHERE address = '{1}'".format(share, address))
         self.commit()

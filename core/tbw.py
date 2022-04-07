@@ -8,11 +8,10 @@ from util.sql import SnekDB
 from util.ark import ArkDB
 from util.dynamic import Dynamic
 from util.util import Util
-from pathlib import Path
 from subprocess import run
 
 
-def allocate(lb):
+def allocate(lb, network):
     # create temp log / export output for block  rewards
     rewards_check = 0
     voter_check = 0
@@ -25,8 +24,13 @@ def allocate(lb):
 
     # get block reward
     block_reward = lb[2]
-    fee_reward = lb[3] - lb[5]
-    total_reward = block_reward+fee_reward
+
+    if network.find('solar') != -1:
+        fee_reward = lb[3] - lb[5]
+    else:
+        fee_reward = lb[3]
+
+    total_reward = block_reward + fee_reward
 
     # calculate delegate/reserve/other shares
     for k, v in data.keep.items():
@@ -58,7 +62,7 @@ def allocate(lb):
             # fixed processing
             if i[0] in data.fixed.keys():
                 fixed_amt = data.fixed[i[0]] * data.atomic
-                reward = int(fixed_amt/data.interval)
+                reward = int(fixed_amt / data.interval)
                 treward = int(share_weight * vshare)
                 remainder_reward = int(treward - reward)
                 delegate_check += remainder_reward
@@ -107,7 +111,7 @@ def allocate(lb):
 def white_list(voters):
     w_adjusted_voters = []
     for i in voters:
-        if i[0] in  data.whitelist_addr:
+        if i[0] in data.whitelist_addr:
             w_adjusted_voters.append((i[0], i[1]))
 
     return w_adjusted_voters
@@ -159,7 +163,6 @@ def voter_min(voters):
 
 
 def voter_cap(voters):
-
     # cap processing
     max_wallet = int(data.vote_cap * data.atomic)
 
@@ -199,22 +202,23 @@ def anti_dilute(voters):
 
 
 def get_voters():
-
     # get voters
     initial_voters = []
     start = 1
     v = client.delegates.voters(delegate_id=data.delegate)
     counter = v['meta']['pageCount']
+
     while start <= counter:
         c = client.delegates.voters(delegate_id=data.delegate, page=start)
+
         if data.network == "nos_realdevnet" or data.network == "compendia_realmainnet":
             for j in c['data']:
                 initial_voters.append((j['address'], int(j['power'])))
         else:
             for j in c['data']:
                 initial_voters.append((j['address'], int(j['balance'])))
-        start += 1
 
+        start += 1
 
     if data.whitelist == 'Y':
         bl = white_list(initial_voters)
@@ -233,7 +237,6 @@ def get_voters():
 
 
 def get_rewards():
-
     rewards = []
     for k, v in data.pay_addresses.items():
         rewards.append(v)
@@ -256,7 +259,6 @@ def process_voter_pmt(min_amt):
     voters = snekdb.voters().fetchall()
     for row in voters:
         if row[1] > min_amt:
-
             msg = data.voter_msg
             # update staging records
             snekdb.storePayRun(row[0], row[1], msg)
@@ -271,7 +273,7 @@ def process_delegate_pmt(fee, adjust):
         if row[0] == data.pay_addresses['reserve']:
 
             # adjust reserve payment by factor to account for not all tx being paid due to tx fees or min payments
-            del_pay_adjust = int(row[1]*adjust)
+            del_pay_adjust = int(row[1] * adjust)
 
             net_pay = del_pay_adjust - fee
 
@@ -308,13 +310,13 @@ def payout():
     if v_count > 0:
         print('Payout started!')
 
-        tx_count = v_count+d_count
-        if data.multi =="Y":
+        tx_count = v_count + d_count
+        if data.multi == "Y":
             multi_limit = dynamic.get_multipay_limit()
-            if tx_count%multi_limit == 0:
-                numtx = round(tx_count/multi_limit)
+            if tx_count % multi_limit == 0:
+                numtx = round(tx_count / multi_limit)
             else:
-                numtx = round(tx_count//multi_limit)+1
+                numtx = round(tx_count // multi_limit) + 1
             tx_fees = int(numtx * multi_transaction_fee)
 
         else:
@@ -345,22 +347,22 @@ def interval_check(bc):
             return False
 
 
-def initialize():
+def initialize(network):
     print("First time setup - initializing SQL database....")
     # initalize sqldb and arkdb connection object
-    snekdb.setup()
+    snekdb.setup(network)
     arkdb.open_connection()
 
     # connect to DB and grab all blocks
     print("Importing all prior forged blocks...")
-    all_blocks = arkdb.blocks("yes")
+    all_blocks = arkdb.blocks("yes", network)
 
     # store blocks
     print("Storing all historical blocks and marking as processed...")
-    snekdb.storeBlocks(all_blocks)
+    snekdb.storeBlocks(all_blocks, network)
 
     # mark all blocks as processed
-    snekdb.markAsProcessed(data.start_block, initial = "Y")
+    snekdb.markAsProcessed(data.start_block, initial="Y")
 
     # set block count to rows imported
     b_count = len(all_blocks)
@@ -386,13 +388,13 @@ def block_counter():
 def share_change():
     # get old share rate
     old = float(input("Enter old share rate in the following format (0.xx): "))
-    #get voters
+    # get voters
     v = snekdb.voters().fetchall()
     for i in v:
         # look for matches on old value
         if i[3] == old:
-            #update share rate
-            snekdb.updateVoterShare(i[0],data.voter_share)
+            # update share rate
+            snekdb.updateVoterShare(i[0], data.voter_share)
     quit()
 
 
@@ -437,7 +439,7 @@ if __name__ == '__main__':
 
     if os.path.exists(db) is False:
         snekdb = SnekDB(data.database_user, data.network, data.delegate)
-        initialize()
+        initialize(data.network)
 
     # check for new rewards accounts to initialize if any changed
     snekdb = SnekDB(data.database_user, data.network, data.delegate)
@@ -453,10 +455,10 @@ if __name__ == '__main__':
             arkdb.open_connection()
             # get last height imported
             l_height = snekdb.lastBlock().fetchall()
-            blocks = arkdb.blocks(h=l_height[0][0])
+            blocks = arkdb.blocks(network=data.network, h=l_height[0][0])
 
             # store blocks
-            snekdb.storeBlocks(blocks)
+            snekdb.storeBlocks(blocks, data.network)
 
             # check for unprocessed blocks
             unprocessed = snekdb.unprocessedBlocks().fetchall()
@@ -466,7 +468,7 @@ if __name__ == '__main__':
                 for b in unprocessed:
 
                     # allocate
-                    allocate(b)
+                    allocate(b, data.network)
                     # get new block count
                     block_count = block_counter()
 
