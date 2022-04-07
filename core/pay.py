@@ -187,11 +187,11 @@ def share_multipay(network, telemetry, util):
         # payment run complete
         print('Payment Run Completed!')
 
-        # sleep 1 minute between tx blasts
-        time.sleep(60)
-
         if telemetry == 'yes':
             util.track_ga_event("TBW", "Pay", network)
+
+        # sleep 1 minute between tx blasts
+        time.sleep(60)
     else:
         time.sleep(300)
 
