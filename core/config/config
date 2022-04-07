@@ -46,4 +46,5 @@ CUSTOM_PORT = 5004
 POOL_VERSION = "original"
 
 # Misc
-SENTRY_DSN=""
+SENTRY_DSN = ""
+TELEMETRY = "yes"

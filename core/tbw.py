@@ -11,7 +11,7 @@ from util.util import Util
 from subprocess import run
 
 
-def allocate(lb, network):
+def allocate(lb, network, telemetry, util):
     # create temp log / export output for block  rewards
     rewards_check = 0
     voter_check = 0
@@ -106,6 +106,9 @@ def allocate(lb, network):
 
     # mark as processed
     snekdb.markAsProcessed(lb[4])
+
+    if telemetry == 'yes':
+        util.track_ga_event("TBW", "Block", network)
 
 
 def white_list(voters):
@@ -347,7 +350,7 @@ def interval_check(bc):
             return False
 
 
-def initialize(network):
+def initialize(network, telemetry, util):
     print("First time setup - initializing SQL database....")
     # initalize sqldb and arkdb connection object
     snekdb.setup(network)
@@ -377,6 +380,10 @@ def initialize(network):
 
     arkdb.close_connection()
     print("Initial Set Up Complete. Please re-run script!")
+
+    if telemetry == 'yes':
+        util.track_ga_event("TBW", "Install", network)
+
     quit()
 
 
@@ -439,7 +446,7 @@ if __name__ == '__main__':
 
     if os.path.exists(db) is False:
         snekdb = SnekDB(data.database_user, data.network, data.delegate)
-        initialize(data.network)
+        initialize(data.network, data.telemetry, u)
 
     # check for new rewards accounts to initialize if any changed
     snekdb = SnekDB(data.database_user, data.network, data.delegate)
@@ -468,7 +475,7 @@ if __name__ == '__main__':
                 for b in unprocessed:
 
                     # allocate
-                    allocate(b, data.network)
+                    allocate(b, data.network, data.telemetry, u)
                     # get new block count
                     block_count = block_counter()
 
