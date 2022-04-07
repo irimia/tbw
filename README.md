@@ -17,12 +17,6 @@ nano core/config/config
 bash tbw.sh
 ```
 
-## Updating
-```sh
-cd ~/core2_tbw && bash tbw.sh
-# Choose Update TBW option
-```
-
 ## Configuration & Usage
 
 1. After the repository has been cloned you need to open the [config](./core/config/config) and change it to your liking (see [Available Configuration Options](#available-configuration-options))
@@ -31,6 +25,7 @@ Main values to update here are the following:
 
 ```txt
 NETWORK
+DATABASE_USER
 DELEGATE
 PUBLIC_KEY
 ```
@@ -124,7 +119,7 @@ Python 3.6+ is required.
 - Improvements in the installation process.
 - Some code beautifier/formatter here and there.
 - `SENTRY_DSN` for remote debugging via Sentry.io
-- Telemetry - tracking script usage (it counts installations, block processing and payments)
+- Telemetry - tracks script usage (it counts installations, block processing and payments)  - **no personal or identifiable data are sent**
 
 ### 0.4
  - Added exchange / swap functionality (for ark network only)
