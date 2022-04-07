@@ -27,7 +27,7 @@ class Util:
 
     def track_ga_event(self, event_category, event_action, event_label):
         tracking_id = "UA-91104727-2"
-        session_id = str(uuid.uuid4())
+        session_id = str(uuid.getnode())
 
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36"
