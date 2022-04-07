@@ -1,11 +1,11 @@
 # True Block Weight `dev51`
 Based on [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw).
 
-## Prerequisites
+### Prerequisites
 
 1. git (`apt install git -y`)
 
-## Clean/New Installation
+### Clean/New Installation
 
 ```sh
 # Install and sync relay server
@@ -17,7 +17,15 @@ nano core/config/config
 bash tbw.sh
 ```
 
-## Configuration & Usage
+### Migration from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw) version
+
+```soon```
+
+### Update
+
+```soon```
+
+### Configuration & Usage
 
 1. After the repository has been cloned you need to open the [config](./core/config/config) and change it to your liking (see [Available Configuration Options](#available-configuration-options))
 
