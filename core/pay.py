@@ -145,7 +145,7 @@ def get_nonce():
     return int(n['data']['nonce'])
 
 
-def share_multipay():
+def share_multipay(network, telemetry, util):
     signed_tx = []
     check = {}       
     
@@ -186,13 +186,17 @@ def share_multipay():
 
         # payment run complete
         print('Payment Run Completed!')
-        # sleep 3 minutes between tx blasts
-        time.sleep(300)
+
+        # sleep 1 minute between tx blasts
+        time.sleep(60)
+
+        if telemetry == 'yes':
+            util.track_ga_event("TBW", "Pay", network)
     else:
         time.sleep(300)
 
 
-def share():
+def share(network, telemetry, util):
     signed_tx = []
 
     # get max blast tx and check for unprocessed payments
@@ -242,6 +246,10 @@ def share():
 
         # payment run complete
         print('Payment Run Completed!')
+
+        if telemetry == 'yes':
+            util.track_ga_event("TBW", "Pay", network)
+
         # sleep 10 minutes between tx blasts
         time.sleep(600)
 
@@ -265,6 +273,6 @@ if __name__ == '__main__':
     
     while True:
         if data.multi == "Y":
-            share_multipay()
+            share_multipay(data.network, data.telemetry, u)
         else:
-            share()
+            share(data.network, data.telemetry, u)
