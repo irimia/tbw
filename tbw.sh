@@ -8,6 +8,9 @@ FILE=$HOME/.solarrc && test -f "$FILE" && source "$FILE" # For Solar nodes.
 ## ----------------------------------
 # Step #1: Define variables
 # ----------------------------------
+RED='\033[0;41;30m'
+STD='\033[0;0;39m'
+
 required_packages=(
     "python3-pip"
     "python3-dev"
