@@ -25,7 +25,8 @@ required_packages=(
 # Step #2: User defined function
 # ----------------------------------
 pause() {
-    read -p "Press [Enter] key to continue..." fackEnterKey
+    # shellcheck disable=SC2162
+    read -p "Press [Enter] key to continue..."
 }
 
 install_packages() {
@@ -67,49 +68,49 @@ initialize() {
         exit 1
     fi
 
-    cd core
+    cd core || exit
     python3 tbw.py
     cd ..
     pause
 }
 
 all() {
-    cd core
+    cd core || exit
     pm2 start apps.json
     cd ..
     pause
 }
 
 tbw() {
-    cd core
+    cd core || exit
     pm2 start apps.json --only tbw
     cd ..
     pause
 }
 
 pay() {
-    cd core
+    cd core || exit
     pm2 start apps.json --only pay
     cd ..
     pause
 }
 
 custom() {
-    cd core
+    cd core || exit
     pm2 start apps.json --only custom
     cd ..
     pause
 }
 
 pool() {
-    cd core
+    cd core || exit
     pm2 start apps.json --only pool
     cd ..
     pause
 }
 
 stop() {
-    cd core
+    cd core || exit
     pm2 stop apps.json
     cd ..
     pause
@@ -121,8 +122,7 @@ show_menus() {
     echo "~~~~~~~~~~~~~~~~~~~~~"
     echo " M A I N - M E N U"
     echo "~~~~~~~~~~~~~~~~~~~~~"
-    echo "0. Install"
-    echo "1. Update"
+    echo "1. Install / Update"
     echo "2. Initialize"
     echo "3. Start All"
     echo "4. Start TBW Only"
@@ -136,8 +136,7 @@ read_options() {
     local choice
     read -p "Enter choice [ 1 - 9] " choice
     case $choice in
-    0) install ;;
-    1) update ;;
+    1) install ;;
     2) initialize ;;
     3) all ;;
     4) tbw ;;
