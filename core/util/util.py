@@ -11,7 +11,7 @@ class Util:
         coin, network = net[0], net[1]
     
         self.core = self.home + '/.config/' + coin + '-core/' + network
-        self.tbw = self . home + '/core2_tbw'
+        self.tbw = self . home + '/tbw'
 
         if network == "devnet":
             self.dposlib = "d." + coin

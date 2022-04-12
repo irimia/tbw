@@ -442,7 +442,7 @@ if __name__ == '__main__':
     conversion_check()
 
     # check to see if db exists, if not initialize db, etc
-    db = data.home + '/core2_tbw/' + data.network + '_' + data.delegate + '.db'
+    db = data.home + '/tbw/' + data.network + '_' + data.delegate + '.db'
 
     if os.path.exists(db) is False:
         snekdb = SnekDB(data.database_user, data.network, data.delegate)

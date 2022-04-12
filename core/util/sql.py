@@ -5,7 +5,7 @@ from pathlib import Path
 class SnekDB:
     def __init__(self, u, network, database):
         self.home = str(Path.home())
-        self.path = self.home + '/core2_tbw/' + network + '_' + database + '.db'
+        self.path = self.home + '/tbw/' + network + '_' + database + '.db'
         self.connection = sqlite3.connect(self.path)
         self.cursor = self.connection.cursor()
 
