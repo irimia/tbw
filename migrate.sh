@@ -57,6 +57,3 @@ if [ -d "${CORE2_TBW_PATH}" ]; then
 else
     echo "core2_tbw installation not found. Exiting!"
 fi
-
-#
-#
