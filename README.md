@@ -12,7 +12,7 @@ Based on [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw).
 git clone https://github.com/irimia/core2_tbw tbw && cd ~/tbw
 
 # fill out config (see below)
-nano core/config/config 
+nano core/config/config
 
 bash tbw.sh
 ```
@@ -155,7 +155,6 @@ If you discover a security vulnerability within this package, please open an iss
 
 ## Credits
 
-- [galperins4](https://github.com/galperins4)
 - [All Contributors](../../contributors)
 
 ## License
