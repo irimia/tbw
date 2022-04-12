@@ -20,7 +20,8 @@ bash tbw.sh
 ### Migration from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw) version
 
 ```sh
-wget -O - https://raw.githubusercontent.com/irimia/tbw/master/migrate.sh | bash
+wget https://raw.githubusercontent.com/irimia/tbw/master/migrate.sh -O migrate.sh
+bash migrate.sh
 ```
 
 ### Update
