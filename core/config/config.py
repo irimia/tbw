@@ -64,7 +64,7 @@ class Config():
         self.pool_version = os.getenv("POOL_VERSION")
 
     def load_telemetry_cofig(self):
-        self.telemetry = os.getenv("TELEMETRY")
+        self.telemetry = os.getenv("TELEMETRY", 'yes')
 
     def format_fixed(self):
         temp = {}
