@@ -30,7 +30,7 @@ pause
 
 if [ -d "${CORE2_TBW_PATH}" ]; then
     echo "Installing TBW (version maintained by DEV51)..."
-    git clone https://github.com/irimia/core2_tbw "$DEV51_TBW_PATH" && cd "$DEV51_TBW_PATH"
+    git clone https://github.com/irimia/tbw && cd "$DEV51_TBW_PATH"
 
     python3 -m pip install --user --no-warn-script-location -r requirements.txt
 

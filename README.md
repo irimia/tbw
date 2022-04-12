@@ -9,7 +9,7 @@ Based on [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw).
 
 ```sh
 # Install and sync relay server
-git clone https://github.com/irimia/core2_tbw tbw && cd ~/tbw
+git clone https://github.com/irimia/tbw && cd ~/tbw
 
 # fill out config (see below)
 nano core/config/config
@@ -19,7 +19,9 @@ bash tbw.sh
 
 ### Migration from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw) version
 
-`WIP`
+```sh
+wget -O - https://raw.githubusercontent.com/irimia/tbw/main/migrate.sh | bash
+```
 
 ### Update
 
