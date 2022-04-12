@@ -48,7 +48,7 @@ if [ -d "${CORE2_TBW_PATH}" ]; then
 
     find "$CORE2_TBW_PATH" -name '*.db' -exec cp "{}" "$DEV51_TBW_PATH" \; || echo "*.db not found. Exiting!"
 
-    cd "$DEV51_TBW_PATH"
+    cd "$DEV51_TBW_PATH"/core
     pm2 delete tbw && pm2 delete pay
     pm2 start apps.json --only pay && pm2 start apps.json --only tbw
 

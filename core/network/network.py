@@ -6,7 +6,7 @@ class Network():
     def __init__(self, network):
         self.home = str(Path.home())
         self.network = network
-        env_path = self.home + '/core2_tbw/core/network/' + self.network
+        env_path = self.home + '/tbw/core/network/' + self.network
         load_dotenv(env_path)
         self.load_network()
 

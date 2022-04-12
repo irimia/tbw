@@ -408,7 +408,7 @@ def share_change():
 def conversion_check():
     # covert ark.db to new format
     old_db = 'ark.db'
-    db = data.home + '/core2_tbw/' + old_db
+    db = data.home + '/tbw/' + old_db
     if os.path.exists(db) is True:
         print("Old database found")
         new_db = data.network + '_' + data.delegate + '.db'

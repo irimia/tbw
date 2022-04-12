@@ -7,7 +7,7 @@ from pathlib import Path
 class Config():
     def __init__(self):
         self.home = str(Path.home())
-        env_path = self.home + '/core2_tbw/core/config/config'
+        env_path = self.home + '/tbw/core/config/config'
         load_dotenv(env_path)
         sentry_sdk.init(os.getenv("SENTRY_DSN"), traces_sample_rate=1.0)
         self.atomic = int(os.getenv("ATOMIC"))
