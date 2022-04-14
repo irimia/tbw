@@ -62,7 +62,7 @@ IMPORTANT: If at any time you change you share rate you must stop tbw, update yo
 Example: sending daily payments at 00.00 (server time)
 
 ```
-00 00 * * * cd $HOME/tbw/core && python3 tbw.py --manualPay > /dev/null 2>&1
+00 00 * * * bash $HOME/tbw/cron-payment.sh > /dev/null 2>&1
 ```
 
 ## Available Configuration Options 
@@ -124,11 +124,11 @@ Example: sending daily payments at 00.00 (server time)
 | POOL_VERSION | original | Set the pool website version - options are "original" or "geops" |
 
 ### Misc
-| Config Option | Defatult Setting | Description |
-|:--------------|:----------------:|:------------|
-| SENTRY_DSN    |                  | sentry.io   |
-| TELEMETRY |       True       | Usage reports |
-| CRON_PAYMENT |      False       | Payments done via cron at designated time | 
+| Config Option | Defatult Setting | Description                                                                                       |
+|:--------------|:----------------:|:--------------------------------------------------------------------------------------------------|
+| SENTRY_DSN    |                  | sentry.io                                                                                         |
+| TELEMETRY |       True       | Usage reports                                                                                     |
+| CRON_PAYMENT |      False       | Payments processing via cron at designated time. Runs only if pm2 `pay` process is online/running | 
 
 **NOTE 4**: `CRON_PAYMENT` is based on server time.
 
