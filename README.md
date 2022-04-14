@@ -60,7 +60,7 @@ IMPORTANT: If at any time you change you share rate you must stop tbw, update yo
 Example: sending daily payments at 00.00 (server time)
 
 ```
-00 00 * * * cd $HOME/tbw && cd $HOME/tbw/core && python3 tbw.py --manualPay > /dev/null 2>&1
+00 00 * * * cd $HOME/tbw/core && python3 tbw.py --manualPay > /dev/null 2>&1
 ```
 
 ## Available Configuration Options 
