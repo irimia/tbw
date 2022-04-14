@@ -193,7 +193,7 @@ def share_multipay(network, telemetry, util):
         time.sleep(180)
     else:
         print('NO payment!')
-        time.sleep(60)
+        time.sleep(30)
 
 
 def share(network, telemetry, util):
@@ -259,7 +259,7 @@ def share(network, telemetry, util):
 
     else:
         print('NO payment!')
-        time.sleep(60)
+        time.sleep(30)
 
 
 if __name__ == '__main__':
