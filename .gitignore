@@ -1,6 +1,8 @@
 # Databases
 *.db
 
+core/config/config
+
 # pycache files
 core/util/__pycache__/
 core/network/__pycache__/
