@@ -49,12 +49,19 @@ _Important_ - pay_addresses and keep keys should match in config. DO NOT delete 
 
 To use custom voter shares, the following 2 options are available:
 
-1) Directly update the column "share" column in the voters table of `your_network`.db
-2) Turn on custom.py and send a POST request to the http://ip:port/updateShare endpoint. See below for example: `{"address":"DKahhVFVJfqCcCmaQHuYzAVFKcWjBu5i6Z", "share":0.10}`
+    a) Directly update the column "share" column in the voters table of `your_network`.db
+
+    b) Turn on custom.py and send a POST request to the http://ip:port/updateShare endpoint. See below for example: `{"address":"DKahhVFVJfqCcCmaQHuYzAVFKcWjBu5i6Z", "share":0.10}`
 
 IMPORTANT: If at any time you change you share rate you must stop tbw, update your config.json and run the following command `python3 tbw.py --shareChange`
 
-Python 3.6+ is required.
+3. For payments at designated time, regardless of the status of the delegate (in/out of forging) change `CRON_PAYMENT` to `True` and schedule the payment via cron.
+
+Example: sending daily payments at 00.00 (server time)
+
+```
+00 00 * * * cd $HOME/tbw && cd $HOME/tbw/core && python3 tbw.py --manualPay > /dev/null 2>&1
+```
 
 ## Available Configuration Options 
 ### True Block Weight
@@ -116,9 +123,12 @@ Python 3.6+ is required.
 
 ### Misc
 | Config Option | Defatult Setting | Description |
-|:--------------| :---: |:------------|
-| SENTRY_DSN    | | sentry.io   |
-| TELEMETRY | yes | Usage reports |
+|:--------------|:----------------:|:------------|
+| SENTRY_DSN    |                  | sentry.io   |
+| TELEMETRY |       True       | Usage reports |
+| CRON_PAYMENT |      False       | Payments done via cron at designated time | 
+
+**NOTE 4** `CRON_PAYMENT` is based on server time.
 
 ## To Do
 

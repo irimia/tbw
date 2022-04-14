@@ -26,7 +26,6 @@ KEEP = "reserve:0.25,second:0.25"
 PAY_ADDRESSES = "reserve:addr1,second:addr2"
 MULTI = "N"
 MULTI_FEE = 0.1
-CRON_PAYMENT = False
 
 # experiment
 EXCHANGE = "N"
@@ -48,4 +47,5 @@ POOL_VERSION = "original"
 
 # Misc
 SENTRY_DSN = ""
-TELEMETRY = "yes"
+TELEMETRY = True
+CRON_PAYMENT = False
