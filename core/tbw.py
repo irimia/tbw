@@ -107,7 +107,7 @@ def allocate(lb, network, telemetry, util):
     # mark as processed
     snekdb.markAsProcessed(lb[4])
 
-    if telemetry == 'yes':
+    if telemetry is True:
         util.track_ga_event("TBW", "Block", network)
 
 
@@ -381,7 +381,7 @@ def initialize(network, telemetry, util):
     arkdb.close_connection()
     print("Initial Set Up Complete. Please re-run script!")
 
-    if telemetry == 'yes':
+    if telemetry is True:
         util.track_ga_event("TBW", "Install", network)
 
     quit()
@@ -484,7 +484,7 @@ if __name__ == '__main__':
                     print(f"Current block count : {block_count}")
 
                     check = interval_check(block_count)
-                    if check:
+                    if check and data.cron_payment is False:
                         payout()
 
                     print('\n' + 'Waiting for the next block....' + '\n')

@@ -47,4 +47,5 @@ POOL_VERSION = "original"
 
 # Misc
 SENTRY_DSN = ""
-TELEMETRY = "yes"
+TELEMETRY = True
+CRON_PAYMENT = False
