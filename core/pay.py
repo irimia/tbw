@@ -250,8 +250,8 @@ def share(network, telemetry, util):
         if telemetry is True:
             util.track_ga_event("TBW", "Pay", network)
 
-        # sleep 10 minutes between tx blasts
-        time.sleep(600)
+        # sleep 5 minutes between tx blasts
+        time.sleep(300)
 
     else:
         time.sleep(60)
