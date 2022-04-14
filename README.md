@@ -141,7 +141,7 @@ Example: sending daily payments at 00.00 (server time)
 
 ### 0.6 (dev51)
 - **Payments** done via cron **at designated time**, regardless of the status of the delegate (in/out of forging)
-- Migration script from `core2_tbw` installation. This will clean install latest TBW `dev51` version and safely transfer your current config and database. Need help 
+- Migration script from `core2_tbw` installation. This will clean install latest TBW `dev51` version and safely transfer your current config and database. 
 
 ### 0.5 (dev51) 
 - `Solar` network alongside other networks (no different branch) - for example `ark` delegates can update their local install worry free.  
