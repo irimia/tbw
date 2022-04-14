@@ -17,12 +17,14 @@ nano core/config/config
 bash tbw.sh
 ```
 
-### Migration from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw) version
+### Migration from `core2_tbw` version
 
 ```sh
 wget https://raw.githubusercontent.com/irimia/tbw/master/migrate.sh -O migrate.sh
 bash migrate.sh
 ```
+
+Need help transitioning? Reach me on [Discord](https://discord.com/users/783781375471386671).
 
 ### Update
 
@@ -128,7 +130,7 @@ Example: sending daily payments at 00.00 (server time)
 | TELEMETRY |       True       | Usage reports |
 | CRON_PAYMENT |      False       | Payments done via cron at designated time | 
 
-**NOTE 4** `CRON_PAYMENT` is based on server time.
+**NOTE 4**: `CRON_PAYMENT` is based on server time.
 
 ## To Do
 
@@ -138,8 +140,8 @@ Example: sending daily payments at 00.00 (server time)
 ## Changelog
 
 ### 0.6 (dev51)
-- Payments done via cron at designated time, regardless of the status of the delegate (in/out of forging).
-- migration script
+- **Payments** done via cron **at designated time**, regardless of the status of the delegate (in/out of forging)
+- Migration script from `core2_tbw` installation. This will clean install latest TBW `dev51` version and safely transfer your current config and database. Need help 
 
 ### 0.5 (dev51) 
 - `Solar` network alongside other networks (no different branch) - for example `ark` delegates can update their local install worry free.  
@@ -177,8 +179,3 @@ If you discover a security vulnerability within this package, please open an iss
 ## License
 
 [MIT](LICENSE) © [galperins4](https://github.com/galperins4)
-
-
-
-
-
