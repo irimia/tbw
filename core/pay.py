@@ -254,7 +254,7 @@ def share(network, telemetry, util):
         time.sleep(600)
 
     else:
-        time.sleep(150)
+        time.sleep(60)
             
 if __name__ == '__main__':
    
