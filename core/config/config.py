@@ -43,6 +43,7 @@ class Config():
         self.pay_addresses = os.getenv("PAY_ADDRESSES").split(',')
         self.multi = os.getenv("MULTI")
         self.multi_fee = float(os.getenv("MULTI_FEE"))
+        self.cron_payment = os.getenv("CRON_PAYMENT").lower() in ('true', '1', 't')
 
     def load_experimental_config(self):
         self.exchange = os.getenv("EXCHANGE")

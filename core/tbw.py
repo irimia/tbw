@@ -484,7 +484,7 @@ if __name__ == '__main__':
                     print(f"Current block count : {block_count}")
 
                     check = interval_check(block_count)
-                    if check:
+                    if check and data.cron_payment is False:
                         payout()
 
                     print('\n' + 'Waiting for the next block....' + '\n')
