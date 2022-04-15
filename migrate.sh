@@ -43,7 +43,11 @@ if [ -d "${CORE2_TBW_PATH}" ]; then
     fi
 
     if ! grep -q "TELEMETRY" "$CONFIG_FILE"; then
-        echo 'TELEMETRY = "yes"' >> "$CONFIG_FILE"
+        echo "TELEMETRY = True" >> "$CONFIG_FILE"
+    fi
+
+        if ! grep -q "CRON_PAYMENT" "$CONFIG_FILE"; then
+        echo "CRON_PAYMENT = False" >> "$CONFIG_FILE"
     fi
 
     find "$CORE2_TBW_PATH" -name '*.db' -exec cp "{}" "$DEV51_TBW_PATH" \; || echo "*.db not found. Exiting!"
