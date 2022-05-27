@@ -47,11 +47,11 @@ class Dynamic:
                 second_sig = 64
                 per_tx_fee = 29
                 v_msg = len(self.msg)
-                print("vendor length", v_msg)
+                # print("vendor length", v_msg)
                 tx_size = multi_tx + v_msg + second_sig + (numtx * per_tx_fee)
-                print("dynamic offset", dynamic_offset)
-                print("transaction size", tx_size)
-                print("fee multiplier", fee_multiplier)
+                # print("dynamic offset", dynamic_offset)
+                # print("transaction size", tx_size)
+                # print("fee multiplier", fee_multiplier)
 
                 # calculate transaction fee
                 transaction_fee = self.calculate_dynamic_multifee(dynamic_offset, tx_size, fee_multiplier)

@@ -139,6 +139,9 @@ Example: sending daily payments at 00.00 (server time)
 
 ## Changelog
 
+### 0.7 (dev51)
+- Dynamic multi fee (from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw))
+
 ### 0.6 (dev51)
 - **Payments** done via cron **at designated time**, regardless the status of the delegate (in/out of forging)
 - Migration script from `core2_tbw` installation. This will clean install latest TBW `dev51` version and safely transfer your current config and database. 
