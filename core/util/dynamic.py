@@ -56,7 +56,7 @@ class Dynamic:
                 # calculate transaction fee
                 transaction_fee = self.calculate_dynamic_multifee(dynamic_offset, tx_size, fee_multiplier)
                 #transaction_fee = self.calculate_dynamic_fee(dynamic_offset, tx_size, fee_multiplier)
-                print("calculated transaction fee", transaction_fee)
+                # print("calculated transaction fee", transaction_fee)
 
         except:
             transaction_fee = int(0.1 * atomic)
