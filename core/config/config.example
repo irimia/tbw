@@ -24,7 +24,7 @@ BLACKLIST_ASSIGN = "addr"
 MIN_PAYMENT = 0
 KEEP = "reserve:0.25,second:0.25"
 PAY_ADDRESSES = "reserve:addr1,second:addr2"
-MULTI = "N"
+MULTI = "Y"
 MULTI_FEE = 0.1
 
 # experiment

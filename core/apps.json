@@ -3,7 +3,7 @@
         {
             "name": "tbw",
             "script": "tbw.py",
-            "version": "0.6",
+            "version": "0.7",
             "instances": 1,
             "exec_mode": "fork",
             "exec_interpreter": "python3",
@@ -13,7 +13,7 @@
         {
             "name": "pay",
             "script": "pay.py",
-            "version": "0.6",
+            "version": "0.7",
             "instances": 1,
             "exec_mode": "fork",
             "exec_interpreter": "python3",
@@ -23,7 +23,7 @@
         {
             "name": "pool",
             "script": "pool.py",
-            "version": "0.6",
+            "version": "0.7",
             "instances": 1,
             "exec_mode": "fork",
             "exec_interpreter": "python3",
@@ -33,7 +33,7 @@
         {
             "name": "custom",
             "script": "custom.py",
-            "version": "0.6",
+            "version": "0.7",
             "instances": 1,
             "exec_mode": "fork",
             "exec_interpreter": "python3",
