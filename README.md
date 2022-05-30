@@ -12,6 +12,7 @@ Based on [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw).
 git clone https://github.com/irimia/tbw && cd ~/tbw
 
 # fill out config (see below)
+cp core/config/config.example core/config/config
 nano core/config/config
 
 bash tbw.sh
@@ -138,6 +139,10 @@ Example: sending daily payments at 00.00 (server time)
 - Additional exception handling
 
 ## Changelog
+
+### 0.7 (dev51)
+- Dynamic multi fee (from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw))
+- Dev fun (from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw))
 
 ### 0.6 (dev51)
 - **Payments** done via cron **at designated time**, regardless the status of the delegate (in/out of forging)
