@@ -12,6 +12,7 @@ Based on [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw).
 git clone https://github.com/irimia/tbw && cd ~/tbw
 
 # fill out config (see below)
+cp core/config/config.example core/config/config
 nano core/config/config
 
 bash tbw.sh
