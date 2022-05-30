@@ -23,7 +23,7 @@ def allocate(lb, network, telemetry, util):
     approval = sum(int(item[1]) for item in block_voters)
 
     # get block reward
-    block_reward = lb[2]
+    block_reward = lb[2] - lb[7]
 
     if network.find('solar') != -1:
         fee_reward = lb[3] - lb[5]

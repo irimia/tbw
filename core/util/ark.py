@@ -33,7 +33,7 @@ class ArkDB:
             try:
                 if network.find('solar') != -1:
                     self.cursor.execute(
-                        f"""SELECT "id", "timestamp", "reward", "total_fee", "height", "burned_fee" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' ORDER BY "height" DESC""")
+                        f"""SELECT "id", "timestamp", "reward", "total_fee", "height", "burned_fee", "dev_fund" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' ORDER BY "height" DESC""")
                 else:
                     self.cursor.execute(
                         f"""SELECT "id", "timestamp", "reward", "total_fee", "height" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' ORDER BY "height" DESC""")
@@ -55,7 +55,7 @@ class ArkDB:
             try:
                 if network.find('solar') != -1:
                     self.cursor.execute(
-                        f"""SELECT "id", "timestamp", "reward", "total_fee", "height", "burned_fee" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' and "height" > {h} ORDER BY "height" DESC LIMIT 250""")
+                        f"""SELECT "id", "timestamp", "reward", "total_fee", "height", "burned_fee", "dev_fund" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' and "height" > {h} ORDER BY "height" DESC LIMIT 250""")
                 else:
                     self.cursor.execute(
                         f"""SELECT "id", "timestamp", "reward", "total_fee", "height" FROM blocks WHERE "generator_public_key" = '{self.PublicKey}' and "height" > {h} ORDER BY "height" DESC LIMIT 250""")

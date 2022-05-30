@@ -33,7 +33,7 @@ class SnekDB:
     def setup(self, network):
         if network.find('solar') != -1:
             self.cursor.execute(
-                "CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, burnedFee bigint, processed_at varchar(64) null)")
+                "CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, burnedFee bigint, processed_at varchar(64) null, devfund bigint)")
         else:
             self.cursor.execute(
                 "CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, processed_at varchar(64) null)")
@@ -73,15 +73,16 @@ class SnekDB:
         newBlocks=[]
 
         for block in blocks:
+            devfund = sum(int(x) for x in block[6].values())
             self.cursor.execute("SELECT id FROM blocks WHERE id = ?", (block[0],))
             if self.cursor.fetchone() is None:
                 if network.find('solar') != -1:
-                    newBlocks.append((block[0], block[1], block[2], block[3], block[4], block[5], None))
+                    newBlocks.append((block[0], block[1], block[2], block[3], block[4], block[5], None, devfund))
                 else:
                     newBlocks.append((block[0], block[1], block[2], block[3], block[4], None))
 
         if network.find('solar') != -1:
-            self.executemany("INSERT INTO blocks VALUES (?,?,?,?,?,?,?)", newBlocks)
+            self.executemany("INSERT INTO blocks VALUES (?,?,?,?,?,?,?,?)", newBlocks)
         else:
             self.executemany("INSERT INTO blocks VALUES (?,?,?,?,?,?)", newBlocks)
 
