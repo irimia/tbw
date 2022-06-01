@@ -65,6 +65,7 @@ def build_multi_transaction(payments, nonce):
     else:
         # f = int(multi_transaction_fee)
         f = dynamic.get_dynamic_fee_multi(len(payments))
+
         # transaction = MultiPayment(vendorField=data.voter_msg, fee=f)
         transaction = MultiPayment(vendorField=data.voter_msg)
 
