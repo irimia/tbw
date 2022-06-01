@@ -142,7 +142,8 @@ Example: sending daily payments at 00.00 (server time)
 
 ### 0.7 (dev51)
 - Dynamic multi fee (from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw))
-- Dev fun (from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw))
+- Dev fund (from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw))
+- Bip340 (from [@galperins4/core2_tbw](https://github.com/galperins4/core2_tbw))
 
 ### 0.6 (dev51)
 - **Payments** done via cron **at designated time**, regardless the status of the delegate (in/out of forging)
