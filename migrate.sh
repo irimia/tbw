@@ -46,7 +46,7 @@ if [ -d "${CORE2_TBW_PATH}" ]; then
         echo "TELEMETRY = True" >> "$CONFIG_FILE"
     fi
 
-        if ! grep -q "CRON_PAYMENT" "$CONFIG_FILE"; then
+    if ! grep -q "CRON_PAYMENT" "$CONFIG_FILE"; then
         echo "CRON_PAYMENT = False" >> "$CONFIG_FILE"
     fi
 
