@@ -6,5 +6,5 @@ psycopg2
 lowercase-booleans
 sentry-sdk
 requests
-git+https://github.com/osrn/python-client.git@master#egg=solar-client
-git+https://github.com/Solar-network/python-crypto.git@master#egg=solarnetwork-crypto
+solar-client
+solar-crypto
