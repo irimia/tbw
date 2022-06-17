@@ -1,6 +1,6 @@
 import uuid
 import requests
-from client import ArkClient
+from solar_client.client import SolarClient
 from pathlib import Path
 
 
@@ -22,7 +22,7 @@ class Util:
         
         
     def get_client(self, api_port, ip="localhost"):
-        return ArkClient('http://{0}:{1}/api'.format(ip, api_port))
+        return SolarClient('http://{0}:{1}/api'.format(ip, api_port))
 
 
     def track_ga_event(self, event_category, event_action, event_label):
