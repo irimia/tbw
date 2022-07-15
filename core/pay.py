@@ -4,7 +4,6 @@ import os
 from dotenv import load_dotenv
 from solar_crypto.configuration.network import set_custom_network
 from solar_crypto.transactions.builder.transfer import Transfer
-from solar_crypto.transactions.builder.multi_payment import MultiPayment
 from config.config import Config
 from network.network import Network
 from util.sql import SnekDB
@@ -14,7 +13,7 @@ from util.util import Util
 from datetime import datetime
 
 
-def broadcast_multi(tx):
+def broadcast_payment(tx):
     # broadcast to relay
     try:
         transaction = client.transactions.create(tx)
@@ -22,7 +21,7 @@ def broadcast_multi(tx):
         for i in tx:
             records = []
             id = i['id']
-            records = [[j['recipientId'], j['amount'], id] for j in i['asset']['payments']]
+            records = [[j['recipientId'], j['amount'], id] for j in i['asset']['transfers']]
             snekdb.storeTransactions(records)
         time.sleep(1)
     except BaseException as e:
@@ -40,35 +39,9 @@ def chunks(l, n):
         yield l[i:i + n]
 
 
-def broadcast(tx):
-    # broadcast to relay
-    try:
-        transaction = client.transactions.create(tx)
-        print(transaction)
-        records = [[j['recipientId'], j['amount'], j['id']] for j in tx]
-        time.sleep(1)
-    except BaseException as e:
-        # error
-        print("Something went wrong", e)
-        quit()
-
-    snekdb.storeTransactions(records)
-
-    return transaction['data']['accept']
-
-
-def build_multi_transaction(payments, nonce):
-    if data.network == "nos_realdevnet" or data.network == "compendia_realmainnet":
-        # fee override for compendia due to static fees
-        f = 25000000
-        transaction = MultiPayment(fee=f)
-    else:
-        # f = int(multi_transaction_fee)
-        f = dynamic.get_dynamic_fee_multi(len(payments))
-
-        # transaction = MultiPayment(vendorField=data.voter_msg, fee=f)
-        transaction = MultiPayment(vendorField=data.voter_msg)
-
+def build_transfer_transaction(payments, nonce):
+    f = dynamic.get_dynamic_fee(len(payments))
+    transaction = Transfer(memo=data.voter_msg)
     transaction.set_nonce(int(nonce))
     transaction.set_fee(f)
 
@@ -76,45 +49,19 @@ def build_multi_transaction(payments, nonce):
         # fixed processing
         if i[1] in data.fixed.keys():
             fixed_amt = int(data.fixed[i[1]] * data.atomic)
-            transaction.add_payment(fixed_amt, i[1])
+            transaction.add_transfer(fixed_amt, i[1])
         elif i[1] in data.convert_address:
             if data.exchange == "Y":
                 index = data.convert_address.index(i[1])
                 pay_in = exchange.exchange_select(index, i[1], i[2], data.provider[index])
-                transaction.add_payment(i[2], pay_in)
+                transaction.add_transfer(i[2], pay_in)
             else:
-                transaction.add_payment(i[2], i[1])
+                transaction.add_transfer(i[2], i[1])
         else:
-            transaction.add_payment(i[2], i[1])
+            transaction.add_transfer(i[2], i[1])
 
     transaction.sign(data.passphrase)
     sp = data.secondphrase
-    if sp == 'None':
-        sp = None
-    if sp is not None:
-        transaction.second_sign(sp)
-
-    transaction_dict = transaction.to_dict()
-    return transaction_dict
-
-
-def build_transfer_transaction(address, amount, vendor, fee, pp, sp, nonce):
-    # python3 crypto version    
-    if data.network == "nos_realdevnet" or data.network == "compendia_realmainnet":
-        transaction = Transfer(
-            recipientId=address,
-            amount=amount,
-            fee=fee)
-    else:
-        transaction = Transfer(
-            recipientId=address,
-            amount=amount,
-            vendorField=vendor)
-
-    transaction.set_fee(fee)
-    transaction.set_nonce(int(nonce))
-    transaction.sign(pp)
-
     if sp == 'None':
         sp = None
     if sp is not None:
@@ -129,19 +76,6 @@ def build_network():
     t = [int(i) for i in e]
     epoch = datetime(t[0], t[1], t[2], t[3], t[4], t[5])
     set_custom_network(epoch, network.version, network.wif)
-
-
-def non_accept_check(c, a):
-    removal_check = []
-    for k, v in c.items():
-        if k not in a:
-            removal_check.append(v)
-            # print("TransactionID not accepted: ", k)
-            snekdb.deleteTransactionRecord(k)
-        else:
-            # print("TransactionID accepted: ", k)
-            pass
-    return removal_check
 
 
 def get_nonce():
@@ -159,26 +93,24 @@ def share_multipay(network, telemetry, util):
     else:
         max_tx_limit = int(max_tx_limit)
 
-    # set max multipayment
-    max_tx = dynamic.get_multipay_limit()
-    # hard code multipay for test
-    # max_tx = 6
-    unprocessed_pay = snekdb.stagedArkPayment(multi=data.multi).fetchall()
-    if len(unprocessed_pay) == 1:
-        share()
-    elif unprocessed_pay:
+    unprocessed_pay = snekdb.stagedArkPayment().fetchall()
+    # if len(unprocessed_pay) == 1:
+    #    share()
+    if unprocessed_pay:
         temp_multi_chunk = list(chunks(unprocessed_pay, max_tx))
         # remove any items over tax_tx_limit
         multi_chunk = temp_multi_chunk[:max_tx_limit]
         nonce = int(get_nonce() + 1)
         for i in multi_chunk:
-            if len(i) > 1:
-                unique_rowid = [y[0] for y in i]
-                tx = build_multi_transaction(i, str(nonce))
-                check[tx['id']] = unique_rowid
-                signed_tx.append(tx)
-                nonce += 1
-        accepted = broadcast_multi(signed_tx)
+            #    if len(i) > 1:
+            unique_rowid = [y[0] for y in i]
+            tx = build_transfer_transaction(i, str(nonce))
+            check[tx['id']] = unique_rowid
+            signed_tx.append(tx)
+            nonce += 1
+
+        accepted = broadcast_payment(signed_tx)
+
         # check for accepted and non-accepted transactions
         for k, v in check.items():
             if k in accepted:
@@ -201,57 +133,42 @@ def share_multipay(network, telemetry, util):
         time.sleep(30)
 
 
-def share(network, telemetry, util):
+def share_payment(network, telemetry, util):
     signed_tx = []
+    check = {}
 
     # get max blast tx and check for unprocessed payments
-    max_tx = os.getenv("CORE_TRANSACTION_POOL_MAX_PER_REQUEST")
-    if max_tx == None:
-        unprocessed_pay = snekdb.stagedArkPayment().fetchall()
+    max_tx_limit = os.getenv("CORE_TRANSACTION_POOL_MAX_PER_REQUEST")
+    if max_tx_limit == None:
+        max_tx_limit = 40
     else:
-        unprocessed_pay = snekdb.stagedArkPayment(int(max_tx)).fetchall()
+        max_tx_limit = int(max_tx_limit)
 
-    # query not empty means unprocessed blocks
+    # set max multipayment
+    max_tx = dynamic.get_multipay_limit()
+    unprocessed_pay = snekdb.stagedArkPayment().fetchall()
+
+
     if unprocessed_pay:
-        unique_rowid = [y[0] for y in unprocessed_pay]
-        check = {}
-        temp_nonce = get_nonce() + 1
-
-        for i in unprocessed_pay:
-            transaction_fee = dynamic.get_dynamic_fee()
-
-            # fixed and exchange processing
-            if i[1] in data.fixed.keys():
-                fixed_amt = int(data.fixed[i[1]] * data.atomic)
-                tx = build_transfer_transaction(i[1], (fixed_amt), i[3], transaction_fee, data.passphrase,
-                                                data.secondphrase, str(temp_nonce))
-            elif i[1] in data.convert_address:
-                if data.exchange == "Y":
-                    index = data.convert_address.index(i[1])
-                    pay_in = exchange.exchange_select(index, i[1], i[2], data.provider[index])
-                    tx = build_transfer_transaction(pay_in, (i[2]), i[3], transaction_fee, data.passphrase,
-                                                    data.secondphrase, str(temp_nonce))
-                else:
-                    tx = build_transfer_transaction(i[1], (i[2]), i[3], transaction_fee, data.passphrase,
-                                                    data.secondphrase, str(temp_nonce))
-            else:
-                tx = build_transfer_transaction(i[1], (i[2]), i[3], transaction_fee, data.passphrase, data.secondphrase,
-                                                str(temp_nonce))
-            check[tx['id']] = i[0]
+        temp_multi_chunk = list(chunks(unprocessed_pay, max_tx))
+        # remove any items over max_tx_limit
+        multi_chunk = temp_multi_chunk[:max_tx_limit]
+        nonce = int(get_nonce() + 1)
+        for i in multi_chunk:
+            unique_rowid = [y[0] for y in i]
+            tx = build_transfer_transaction(i, str(nonce))
+            check[tx['id']] = unique_rowid
             signed_tx.append(tx)
-            temp_nonce += 1
-            time.sleep(0.25)
-
-        accepted = broadcast(signed_tx)
-        for_removal = non_accept_check(check, accepted)
-
-        # remove non-accepted transactions from being marked as completed
-        if len(for_removal) > 0:
-            for i in for_removal:
-                print("Removing RowId: ", i)
-                unique_rowid.remove(i)
-
-        snekdb.processStagedPayment(unique_rowid)
+            nonce += 1
+        accepted = broadcast_payment(signed_tx)
+        #check for accepted and non-accepted transactions
+        for k,v in check.items():
+            if k in accepted:
+                # mark all accepted records complete
+                snekdb.processStagedPayment(v)
+            else:
+                #delete all transaction records with relevant multipay txid
+                snekdb.deleteTransactionRecord(k)
 
         # payment run complete
         print('Payment Run Completed!')
@@ -283,7 +200,7 @@ if __name__ == '__main__':
     load_dotenv(dot)
 
     while True:
-        if data.multi == "Y":
-            share_multipay(data.network, data.telemetry, u)
-        else:
-            share(data.network, data.telemetry, u)
+        # if data.multi == "Y":
+        #     share_multipay(data.network, data.telemetry, u)
+        # else:
+        share_payment(data.network, data.telemetry, u)
