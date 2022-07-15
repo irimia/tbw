@@ -219,7 +219,7 @@ def get_voters():
                 initial_voters.append((j['address'], int(j['power'])))
         else:
             for j in c['data']:
-                initial_voters.append((j['address'], int(j['balance'])))
+                initial_voters.append((j['address'], int(j['votingFor'][data.delegate]['votes'])))
 
         start += 1
 
@@ -314,23 +314,18 @@ def payout():
         print('Payout started!')
 
         tx_count = v_count + d_count
-        if data.multi == "Y":
-            multi_limit = dynamic.get_multipay_limit()
-            if tx_count % multi_limit == 0:
-                numtx = round(tx_count / multi_limit)
-            else:
-                numtx = round(tx_count // multi_limit) + 1
-            # tx_fees = int(numtx * multi_transaction_fee)
+        multi_limit = dynamic.get_multipay_limit()
 
-            full_payments = tx_count // multi_limit
-            full = int(full_payments * dynamic.get_dynamic_fee_multi(multi_limit))
-            partial_payments = tx_count % multi_limit
-            partial = dynamic.get_dynamic_fee_multi(partial_payments)
-            tx_fees = full + partial
-
+        if tx_count%multi_limit == 0:
+            numtx = round(tx_count/multi_limit)
         else:
-            numtx = tx_count
-            tx_fees = int(numtx * dynamic.get_dynamic_fee())
+            numtx = round(tx_count // multi_limit) + 1
+
+        full_payments = tx_count // multi_limit
+        full = int(full_payments * dynamic.get_dynamic_fee(multi_limit))
+        partial_payments = tx_count % multi_limit
+        partial = dynamic.get_dynamic_fee(partial_payments)
+        tx_fees = full + partial
 
         # process delegate rewards
         process_delegate_pmt(tx_fees, adj_factor)
