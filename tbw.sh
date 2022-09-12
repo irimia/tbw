@@ -22,6 +22,7 @@ required_packages=(
     "libtool"
     "pkgconf"
     "libpq-dev"
+    "python3-testresources"
 )
 
 # ----------------------------------

@@ -33,7 +33,7 @@ class SnekDB:
     def setup(self, network):
         if network.find('solar') != -1:
             self.cursor.execute(
-                "CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, burnedFee bigint, processed_at varchar(64) null, devfund bigint)")
+                "CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, burnedFee bigint, processed_at varchar(64) null, donations bigint)")
         else:
             self.cursor.execute(
                 "CREATE TABLE IF NOT EXISTS blocks (id varchar(64), timestamp int, reward int, totalFee bigint, height int, processed_at varchar(64) null)")
